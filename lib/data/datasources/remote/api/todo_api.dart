@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:todo_app_web/data/models/response/todo_response.dart';
 
 import '../../../../core/constants/api_constants.dart';
 
@@ -7,21 +8,28 @@ class TodoApi {
 
   TodoApi(this._dio);
 
-  Future<Response> getTodos() async {
-    return await _dio.get(ApiConstants.todosEndpoint);
+  Future<List<TodoResponse>> getTodos() async {
+    final response = await _dio.get(ApiConstants.todosEndpoint);
+
+    final todos = (response.data as List)
+        .map((e) => TodoResponse.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    return todos;
   }
 
-  Future<Response> createTodo(Map<String, dynamic> data) async {
-    return await _dio.post(ApiConstants.todosEndpoint, data: data);
+  Future<TodoResponse> createTodo(Map<String, dynamic> data) async {
+    final response = await _dio.post(ApiConstants.todosEndpoint);
+    return TodoResponse.fromJson(response.data);
   }
 
-  Future<Response> updateTodo(int id, Map<String, dynamic> data) async {
-    final url = '${ApiConstants.todosEndpoint}/$id';
-    return await _dio.put(url, data: data);
+  Future<TodoResponse> updateTodo(String id, Map<String, dynamic> data) async {
+    final response = await _dio.put(ApiConstants.todosEndpoint);
+    return TodoResponse.fromJson(response.data);
   }
 
-  Future<Response> deleteTodo(int id) async {
-    final url = '${ApiConstants.todosEndpoint}/$id';
-    return await _dio.delete(url);
+  Future<TodoResponse> deleteTodo(String id) async {
+    final response = await _dio.delete(ApiConstants.todosEndpoint);
+    return TodoResponse.fromJson(response.data);
   }
 }

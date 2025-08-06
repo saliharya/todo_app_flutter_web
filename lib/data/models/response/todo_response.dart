@@ -1,5 +1,5 @@
 class TodoResponse {
-  final int id;
+  final String id;
   final String title;
   final bool completed;
 
@@ -11,7 +11,7 @@ class TodoResponse {
 
   factory TodoResponse.fromJson(Map<String, dynamic> json) {
     return TodoResponse(
-      id: json['id'] as int,
+      id: json['id'].toString(),
       title: json['title'] as String,
       completed: json['completed'] as bool,
     );

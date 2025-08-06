@@ -13,51 +13,22 @@ class TodoRepositoryImpl implements TodoRepository {
 
   @override
   Future<List<TodoResponse>> getTodos() async {
-    try {
-      final response = await _api.getTodos();
-      final raw = response.data;
-
-      final List<TodoResponse> todos = (raw['data'] as List)
-          .map((e) => TodoResponse.fromJson(e as Map<String, dynamic>))
-          .toList();
-
-      return todos;
-    } on DioException catch (e) {
-      throw _toReadableError(e);
-    }
+    return _api.getTodos();
   }
 
   @override
   Future<TodoResponse> createTodo(TodoResponse todo) async {
-    try {
-      final response = await _api.createTodo(todo.toJson());
-      final raw = response.data;
-
-      return TodoResponse.fromJson(raw['data']);
-    } on DioException catch (e) {
-      throw _toReadableError(e);
-    }
+    return _api.createTodo(todo.toJson());
   }
 
   @override
-  Future<TodoResponse> updateTodo(int id, TodoResponse todo) async {
-    try {
-      final response = await _api.updateTodo(id, todo.toJson());
-      final raw = response.data;
-
-      return TodoResponse.fromJson(raw['data']);
-    } on DioException catch (e) {
-      throw _toReadableError(e);
-    }
+  Future<TodoResponse> updateTodo(String id, TodoResponse todo) async {
+    return _api.updateTodo(id, todo.toJson());
   }
 
   @override
-  Future<void> deleteTodo(int id) async {
-    try {
-      await _api.deleteTodo(id);
-    } on DioException catch (e) {
-      throw _toReadableError(e);
-    }
+  Future<TodoResponse> deleteTodo(String id) async {
+    return _api.deleteTodo(id);
   }
 
   Exception _toReadableError(DioException error) {

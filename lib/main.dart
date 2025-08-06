@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:todo_app_web/utils/routes/keys.dart';
 import 'package:todo_app_web/utils/routes/routes.dart';
 
+import 'core/di/injection.dart';
+
 void main() {
+  getDependencies();
   runApp(const MyApp());
 }
 

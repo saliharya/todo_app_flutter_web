@@ -5,7 +5,7 @@ abstract class TodoRepository {
 
   Future<TodoResponse> createTodo(TodoResponse todo);
 
-  Future<TodoResponse> updateTodo(int id, TodoResponse todo);
+  Future<TodoResponse> updateTodo(String id, TodoResponse todo);
 
-  Future<void> deleteTodo(int id);
+  Future<void> deleteTodo(String id);
 }

@@ -1,5 +1,5 @@
-import 'package:todo_app_web/domain/repositories/todo_repository.dart';
 import 'package:injectable/injectable.dart';
+import 'package:todo_app_web/domain/repositories/todo_repository.dart';
 
 @injectable
 class DeleteTodoUseCase {
@@ -7,7 +7,7 @@ class DeleteTodoUseCase {
 
   DeleteTodoUseCase(this.repository);
 
-  Future<void> call(int id) {
-    return repository.deleteTodo(id);
+  Future<void> call(String id) async {
+    return await repository.deleteTodo(id);
   }
 }

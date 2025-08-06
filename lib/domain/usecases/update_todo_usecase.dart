@@ -8,7 +8,7 @@ class UpdateTodoUseCase {
 
   UpdateTodoUseCase(this.repository);
 
-  Future<TodoResponse> call(int id, TodoResponse todo) {
+  Future<TodoResponse> call(String id, TodoResponse todo) {
     return repository.updateTodo(id, todo);
   }
 }

@@ -42,7 +42,7 @@ class TodoCubit extends Cubit<TodoState> {
     }
   }
 
-  Future<void> updateTodo(int id, TodoResponse todo) async {
+  Future<void> updateTodo(String id, TodoResponse todo) async {
     emit(TodoLoading());
     try {
       await updateTodoUseCase(id, todo);
@@ -52,7 +52,7 @@ class TodoCubit extends Cubit<TodoState> {
     }
   }
 
-  Future<void> deleteTodo(int id) async {
+  Future<void> deleteTodo(String id) async {
     emit(TodoLoading());
     try {
       await deleteTodoUseCase(id);

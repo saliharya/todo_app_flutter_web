@@ -34,7 +34,7 @@ class TodoListPage extends StatelessWidget {
                     );
                   },
                   onDelete: () {
-                    context.read<TodoCubit>().deleteTodo(todo.id);
+                    context.read<TodoCubit>().deleteTodo(todo.id.toString());
                   },
                 );
               },
