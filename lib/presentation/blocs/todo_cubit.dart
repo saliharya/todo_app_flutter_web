@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:todo_app_web/data/models/response/todo_response.dart';
 import 'package:todo_app_web/presentation/blocs/todo_state.dart';
 
@@ -7,6 +8,7 @@ import '../../domain/usecases/delete_todo_usecase.dart';
 import '../../domain/usecases/get_todos_usecase.dart';
 import '../../domain/usecases/update_todo_usecase.dart';
 
+@injectable
 class TodoCubit extends Cubit<TodoState> {
   final GetTodosUseCase getTodosUseCase;
   final CreateTodoUseCase createTodoUseCase;
@@ -22,47 +24,41 @@ class TodoCubit extends Cubit<TodoState> {
 
   Future<void> fetchTodos() async {
     emit(TodoLoading());
-    final response = await getTodosUseCase();
-    if (response.data != null) {
-      emit(TodoLoaded(response.data!));
-    } else {
-      emit(
-        TodoError(response.errorDetails?.message ?? 'Failed to fetch todos'),
-      );
+    try {
+      final todos = await getTodosUseCase();
+      emit(TodoLoaded(todos));
+    } catch (e) {
+      emit(TodoError(e.toString()));
     }
   }
 
   Future<void> addTodo(TodoResponse todo) async {
     emit(TodoLoading());
-    final response = await createTodoUseCase(todo);
-    if (response.data != null) {
-      fetchTodos();
-    } else {
-      emit(TodoError(response.errorDetails?.message ?? 'Failed to add todo'));
+    try {
+      await createTodoUseCase(todo);
+      await fetchTodos();
+    } catch (e) {
+      emit(TodoError(e.toString()));
     }
   }
 
   Future<void> updateTodo(int id, TodoResponse todo) async {
     emit(TodoLoading());
-    final response = await updateTodoUseCase(id, todo);
-    if (response.data != null) {
-      fetchTodos();
-    } else {
-      emit(
-        TodoError(response.errorDetails?.message ?? 'Failed to update todo'),
-      );
+    try {
+      await updateTodoUseCase(id, todo);
+      await fetchTodos();
+    } catch (e) {
+      emit(TodoError(e.toString()));
     }
   }
 
   Future<void> deleteTodo(int id) async {
     emit(TodoLoading());
-    final response = await deleteTodoUseCase(id);
-    if (response.code == 200) {
-      fetchTodos();
-    } else {
-      emit(
-        TodoError(response.errorDetails?.message ?? 'Failed to delete todo'),
-      );
+    try {
+      await deleteTodoUseCase(id);
+      await fetchTodos();
+    } catch (e) {
+      emit(TodoError(e.toString()));
     }
   }
 }
