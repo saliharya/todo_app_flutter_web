@@ -14,11 +14,12 @@ class TodoLoading extends TodoState {}
 
 class TodoLoaded extends TodoState {
   final List<Todo> todos;
+  final String query;
 
-  const TodoLoaded(this.todos);
+  const TodoLoaded(this.todos, this.query);
 
   @override
-  List<Object?> get props => [todos];
+  List<Object?> get props => [todos, query];
 }
 
 class TodoError extends TodoState {

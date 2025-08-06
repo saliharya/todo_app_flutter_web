@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:todo_app_web/data/models/response/todo_dto.dart';
 import 'package:todo_app_web/domain/entities/todo.dart';
 import 'package:todo_app_web/presentation/blocs/todo_state.dart';
 
@@ -16,6 +15,8 @@ class TodoCubit extends Cubit<TodoState> {
   final UpdateTodoUseCase updateTodoUseCase;
   final DeleteTodoUseCase deleteTodoUseCase;
 
+  List<Todo> _allTodos = [];
+
   TodoCubit({
     required this.getTodosUseCase,
     required this.createTodoUseCase,
@@ -27,7 +28,8 @@ class TodoCubit extends Cubit<TodoState> {
     emit(TodoLoading());
     try {
       final todos = await getTodosUseCase();
-      emit(TodoLoaded(todos));
+      _allTodos = todos;
+      emit(TodoLoaded(todos, ""));
     } catch (e) {
       emit(TodoError(e.toString()));
     }
@@ -61,5 +63,12 @@ class TodoCubit extends Cubit<TodoState> {
     } catch (e) {
       emit(TodoError(e.toString()));
     }
+  }
+
+  void searchTodos(String query) {
+    final filtered = _allTodos
+        .where((todo) => todo.title.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    emit(TodoLoaded(filtered, query));
   }
 }
