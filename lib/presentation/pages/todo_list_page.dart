@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_app_web/domain/entities/todo.dart';
 import 'package:todo_app_web/presentation/blocs/todo_cubit.dart';
 import 'package:todo_app_web/presentation/blocs/todo_state.dart';
 import 'package:todo_app_web/presentation/widgets/add_todo_modal.dart';
 import 'package:todo_app_web/presentation/widgets/todo_item.dart';
+
+import '../../domain/entities/todo.dart';
+import '../widgets/edit_todo_modal.dart';
 
 class TodoListPage extends StatelessWidget {
   const TodoListPage({super.key});
@@ -34,10 +36,14 @@ class TodoListPage extends StatelessWidget {
                 return TodoItem(
                   todo: todo,
                   onEdit: () {
-                    // TODO: Navigate to edit screen or open dialog
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Edit tapped')),
-                    );
+                    showEditTodoModal(context, todo.title, (updatedTitle) {
+                      final updatedTodo = Todo(
+                        id: todo.id,
+                        title: updatedTitle,
+                        completed: todo.completed,
+                      );
+                      context.read<TodoCubit>().updateTodo(updatedTodo);
+                    });
                   },
                   onDelete: () {
                     context.read<TodoCubit>().deleteTodo(todo.id.toString());
@@ -54,9 +60,8 @@ class TodoListPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showAddTodoModal(context, (title, completed) {
-            final todo = Todo(title: title, completed: completed);
-            context.read<TodoCubit>().addTodo(todo);
+          showAddTodoModal(context, (title) {
+            context.read<TodoCubit>().addTodo(title);
           });
         },
         child: const Icon(Icons.add),
@@ -64,10 +69,22 @@ class TodoListPage extends StatelessWidget {
     );
   }
 
-  void showAddTodoModal(BuildContext context, void Function(String, bool) onSubmit) {
+  void showAddTodoModal(BuildContext context, void Function(String) onSubmit) {
     showDialog(
       context: context,
       builder: (context) => AddTodoModal(onSubmit: onSubmit),
+    );
+  }
+
+  void showEditTodoModal(
+    BuildContext context,
+    String initialTitle,
+    void Function(String) onSubmit,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) =>
+          EditTodoModal(initialTitle: initialTitle, onSubmit: onSubmit),
     );
   }
 }

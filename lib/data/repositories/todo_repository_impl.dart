@@ -22,9 +22,10 @@ class TodoRepositoryImpl implements TodoRepository {
   }
 
   @override
-  Future<Todo> createTodo(Todo todo) async {
+  Future<Todo> createTodo(String title) async {
     try {
-      final todoResponse = await _api.createTodo(_todoDtoMapper(todo).toJson());
+      final payload = {'title': title};
+      final todoResponse = await _api.createTodo(payload);
       return _todoEntityMapper(todoResponse);
     } on Exception {
       throw Exception("Failed to create todo");

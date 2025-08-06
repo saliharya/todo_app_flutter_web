@@ -33,10 +33,10 @@ class TodoCubit extends Cubit<TodoState> {
     }
   }
 
-  Future<void> addTodo(Todo todo) async {
+  Future<void> addTodo(String title) async {
     emit(TodoLoading());
     try {
-      await createTodoUseCase(todo);
+      await createTodoUseCase(title);
       await fetchTodos();
     } catch (e) {
       emit(TodoError(e.toString()));

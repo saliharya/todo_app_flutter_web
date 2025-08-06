@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:todo_app_web/data/models/response/todo_dto.dart';
+import 'package:todo_app_web/domain/entities/todo.dart';
 
 import '../../../../core/constants/api_constants.dart';
 
@@ -19,12 +20,13 @@ class TodoApi {
   }
 
   Future<TodoDto> createTodo(Map<String, dynamic> data) async {
-    final response = await _dio.post(ApiConstants.todosEndpoint);
+    final response = await _dio.post(ApiConstants.todosEndpoint, data: data);
     return TodoDto.fromJson(response.data);
   }
 
   Future<TodoDto> updateTodo(Map<String, dynamic> data) async {
-    final response = await _dio.put(ApiConstants.todosEndpoint);
+    final id = data['id'];
+    final response = await _dio.put("${ApiConstants.todosEndpoint}/$id", data: data);
     return TodoDto.fromJson(response.data);
   }
 

@@ -10,7 +10,7 @@ class CreateTodoUseCase {
 
   CreateTodoUseCase(this.repository);
 
-  Future<Todo> call(Todo todo) {
-    return repository.createTodo(todo);
+  Future<Todo> call(String title) {
+    return repository.createTodo(title);
   }
 }

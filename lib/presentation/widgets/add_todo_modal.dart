@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AddTodoModal extends StatefulWidget {
-  final void Function(String title, bool completed) onSubmit;
+  final void Function(String title) onSubmit;
 
   const AddTodoModal({super.key, required this.onSubmit});
 
@@ -12,11 +12,10 @@ class AddTodoModal extends StatefulWidget {
 class _AddTodoModalState extends State<AddTodoModal> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
-  bool _completed = false;
 
   void _handleSubmit() {
     if (_formKey.currentState!.validate()) {
-      widget.onSubmit(_titleController.text, _completed);
+      widget.onSubmit(_titleController.text);
       Navigator.of(context).pop();
     }
   }
@@ -46,16 +45,6 @@ class _AddTodoModalState extends State<AddTodoModal> {
                 ),
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Enter a title' : null,
-              ),
-              const SizedBox(height: 16),
-              CheckboxListTile(
-                title: const Text('Completed'),
-                value: _completed,
-                onChanged: (value) {
-                  setState(() {
-                    _completed = value ?? false;
-                  });
-                },
               ),
               const SizedBox(height: 16),
               ElevatedButton(
