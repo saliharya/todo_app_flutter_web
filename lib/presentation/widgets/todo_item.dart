@@ -3,19 +3,31 @@ import 'package:todo_app_web/domain/entities/todo.dart';
 
 class TodoItem extends StatelessWidget {
   final Todo todo;
-  final VoidCallback? onEdit;
-  final VoidCallback? onDelete;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+  final Function(bool) onCompleteChange;
 
-  const TodoItem({super.key, required this.todo, this.onEdit, this.onDelete});
+  const TodoItem({
+    super.key,
+    required this.todo,
+    required this.onEdit,
+    required this.onDelete,
+    required this.onCompleteChange,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
-        leading: Icon(
-          todo.completed ? Icons.check_circle : Icons.circle_outlined,
-          color: todo.completed ? Colors.green : Colors.grey,
+        leading: IconButton(
+          icon: Icon(
+            todo.completed ? Icons.check_circle : Icons.circle_outlined,
+            color: todo.completed ? Colors.green : Colors.grey,
+          ),
+          onPressed: () {
+            onCompleteChange(!todo.completed);
+          },
         ),
         title: Text(
           todo.title,

@@ -48,6 +48,14 @@ class TodoListPage extends StatelessWidget {
                   onDelete: () {
                     context.read<TodoCubit>().deleteTodo(todo.id.toString());
                   },
+                  onCompleteChange: (newValue) {
+                    final updatedTodo = Todo(
+                      id: todo.id,
+                      title: todo.title,
+                      completed: newValue,
+                    );
+                    context.read<TodoCubit>().updateTodo(updatedTodo);
+                  },
                 );
               },
             );
