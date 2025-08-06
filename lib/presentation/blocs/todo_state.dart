@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:todo_app_web/data/models/response/todo_response.dart';
+import 'package:todo_app_web/domain/entities/todo.dart';
 
 abstract class TodoState extends Equatable {
   const TodoState();
@@ -13,7 +13,7 @@ class TodoInitial extends TodoState {}
 class TodoLoading extends TodoState {}
 
 class TodoLoaded extends TodoState {
-  final List<TodoResponse> todos;
+  final List<Todo> todos;
 
   const TodoLoaded(this.todos);
 

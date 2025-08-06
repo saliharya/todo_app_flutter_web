@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:todo_app_web/data/models/response/todo_response.dart';
+import 'package:todo_app_web/data/models/response/todo_dto.dart';
+import 'package:todo_app_web/domain/entities/todo.dart';
 import 'package:todo_app_web/presentation/blocs/todo_state.dart';
 
 import '../../domain/usecases/create_todo_usecase.dart';
@@ -32,7 +33,7 @@ class TodoCubit extends Cubit<TodoState> {
     }
   }
 
-  Future<void> addTodo(TodoResponse todo) async {
+  Future<void> addTodo(Todo todo) async {
     emit(TodoLoading());
     try {
       await createTodoUseCase(todo);
@@ -42,10 +43,10 @@ class TodoCubit extends Cubit<TodoState> {
     }
   }
 
-  Future<void> updateTodo(String id, TodoResponse todo) async {
+  Future<void> updateTodo(Todo todo) async {
     emit(TodoLoading());
     try {
-      await updateTodoUseCase(id, todo);
+      await updateTodoUseCase(todo);
       await fetchTodos();
     } catch (e) {
       emit(TodoError(e.toString()));

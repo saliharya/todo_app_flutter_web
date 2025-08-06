@@ -1,7 +1,7 @@
 class Todo {
-  final int? id;
+  final String id;
   final String title;
   final bool completed;
 
-  Todo({this.id, required this.title, required this.completed});
+  Todo({required this.id, required this.title, required this.completed});
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app_web/data/models/response/todo_response.dart';
+import 'package:todo_app_web/domain/entities/todo.dart';
 
 class TodoItem extends StatelessWidget {
-  final TodoResponse todo;
+  final Todo todo;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 

@@ -1,11 +1,12 @@
-import 'package:todo_app_web/data/models/response/todo_response.dart';
+import 'package:todo_app_web/data/models/response/todo_dto.dart';
+import 'package:todo_app_web/domain/entities/todo.dart';
 
 abstract class TodoRepository {
-  Future<List<TodoResponse>> getTodos();
+  Future<List<Todo>> getTodos();
 
-  Future<TodoResponse> createTodo(TodoResponse todo);
+  Future<Todo> createTodo(Todo todo);
 
-  Future<TodoResponse> updateTodo(String id, TodoResponse todo);
+  Future<Todo> updateTodo(Todo todo);
 
   Future<void> deleteTodo(String id);
 }

@@ -1,9 +1,9 @@
-import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:todo_app_web/data/models/response/todo_dto.dart';
 import 'package:todo_app_web/domain/repositories/todo_repository.dart';
 
+import '../../domain/entities/todo.dart';
 import '../datasources/remote/api/todo_api.dart';
-import '../models/response/todo_response.dart';
 
 @LazySingleton(as: TodoRepository)
 class TodoRepositoryImpl implements TodoRepository {
@@ -12,30 +12,47 @@ class TodoRepositoryImpl implements TodoRepository {
   TodoRepositoryImpl(this._api);
 
   @override
-  Future<List<TodoResponse>> getTodos() async {
-    return _api.getTodos();
+  Future<List<Todo>> getTodos() async {
+    try {
+      final todosResponse = await _api.getTodos();
+      return todosResponse.map(_todoEntityMapper).toList();
+    } on Exception {
+      throw Exception("Failed to fetch todos");
+    }
   }
 
   @override
-  Future<TodoResponse> createTodo(TodoResponse todo) async {
-    return _api.createTodo(todo.toJson());
+  Future<Todo> createTodo(Todo todo) async {
+    try {
+      final todoResponse = await _api.createTodo(_todoDtoMapper(todo).toJson());
+      return _todoEntityMapper(todoResponse);
+    } on Exception {
+      throw Exception("Failed to create todo");
+    }
   }
 
   @override
-  Future<TodoResponse> updateTodo(String id, TodoResponse todo) async {
-    return _api.updateTodo(id, todo.toJson());
+  Future<Todo> updateTodo(Todo todo) async {
+    try {
+      final todoResponse = await _api.updateTodo(_todoDtoMapper(todo).toJson());
+      return _todoEntityMapper(todoResponse);
+    } on Exception {
+      throw Exception("Failed to update todo");
+    }
   }
 
   @override
-  Future<TodoResponse> deleteTodo(String id) async {
-    return _api.deleteTodo(id);
+  Future<void> deleteTodo(String id) async {
+    try {
+      await _api.deleteTodo(id);
+    } on Exception {
+      throw Exception("Failed to delete todo");
+    }
   }
 
-  Exception _toReadableError(DioException error) {
-    final message =
-        error.response?.data['error']?['message'] ??
-        error.message ??
-        'Unknown error';
-    return Exception(message);
-  }
+  Todo _todoEntityMapper(TodoDto todo) =>
+      Todo(id: todo.id, title: todo.title, completed: todo.completed);
+
+  TodoDto _todoDtoMapper(Todo todo) =>
+      TodoDto(id: todo.id, title: todo.title, completed: todo.completed);
 }
