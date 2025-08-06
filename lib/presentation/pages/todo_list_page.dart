@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:todo_app_web/presentation/blocs/todo_cubit.dart';
 import 'package:todo_app_web/presentation/blocs/todo_state.dart';
+import 'package:todo_app_web/presentation/enum/todo_filter.dart';
 import 'package:todo_app_web/presentation/widgets/add_todo_modal.dart';
+import 'package:todo_app_web/presentation/widgets/filter_dropdown.dart';
 import 'package:todo_app_web/presentation/widgets/search_bar_widget.dart';
 import 'package:todo_app_web/presentation/widgets/todo_item.dart';
 
@@ -28,7 +30,9 @@ class TodoListPage extends StatelessWidget {
           if (state is TodoLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is TodoLoaded) {
-            if (state.todos.isEmpty && state.query.isEmpty) {
+            if (state.todos.isEmpty &&
+                state.query.isEmpty &&
+                state.filter == TodoFilter.all) {
               return Column(
                 children: [
                   SizedBox(
@@ -50,8 +54,19 @@ class TodoListPage extends StatelessWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
-                  SearchBarWidget(
-                    onChanged: context.read<TodoCubit>().searchTodos,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SearchBarWidget(
+                          onChanged: context.read<TodoCubit>().searchTodos,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      FilterDropdownWidget(
+                        selectedFilter: state.filter,
+                        onChanged: context.read<TodoCubit>().filterTodos,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   ListView.builder(
@@ -64,7 +79,9 @@ class TodoListPage extends StatelessWidget {
                         child: TodoItem(
                           todo: todo,
                           onEdit: () {
-                            showEditTodoModal(context, todo.title, (updatedTitle) {
+                            showEditTodoModal(context, todo.title, (
+                              updatedTitle,
+                            ) {
                               final updatedTodo = Todo(
                                 id: todo.id,
                                 title: updatedTitle,

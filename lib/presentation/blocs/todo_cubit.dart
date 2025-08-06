@@ -1,12 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:todo_app_web/domain/entities/todo.dart';
+import 'package:todo_app_web/domain/usecases/create_todo_usecase.dart';
+import 'package:todo_app_web/domain/usecases/delete_todo_usecase.dart';
+import 'package:todo_app_web/domain/usecases/get_todos_usecase.dart';
+import 'package:todo_app_web/domain/usecases/update_todo_usecase.dart';
 import 'package:todo_app_web/presentation/blocs/todo_state.dart';
-
-import '../../domain/usecases/create_todo_usecase.dart';
-import '../../domain/usecases/delete_todo_usecase.dart';
-import '../../domain/usecases/get_todos_usecase.dart';
-import '../../domain/usecases/update_todo_usecase.dart';
+import 'package:todo_app_web/presentation/enum/todo_filter.dart';
 
 @injectable
 class TodoCubit extends Cubit<TodoState> {
@@ -24,12 +24,14 @@ class TodoCubit extends Cubit<TodoState> {
     required this.deleteTodoUseCase,
   }) : super(TodoInitial());
 
+  String _query = '';
+  TodoFilter _filter = TodoFilter.all;
+
   Future<void> fetchTodos() async {
     emit(TodoLoading());
     try {
-      final todos = await getTodosUseCase();
-      _allTodos = todos;
-      emit(TodoLoaded(todos, ""));
+      _allTodos = await getTodosUseCase();
+      _emitFilteredTodos();
     } catch (e) {
       emit(TodoError(e.toString()));
     }
@@ -66,9 +68,32 @@ class TodoCubit extends Cubit<TodoState> {
   }
 
   void searchTodos(String query) {
-    final filtered = _allTodos
-        .where((todo) => todo.title.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-    emit(TodoLoaded(filtered, query));
+    _query = query;
+    _emitFilteredTodos();
+  }
+
+  void filterTodos(TodoFilter filter) {
+    _filter = filter;
+    _emitFilteredTodos();
+  }
+
+  void _emitFilteredTodos() {
+    List<Todo> filtered = _allTodos;
+
+    if (_query.isNotEmpty) {
+      filtered = filtered
+          .where(
+            (todo) => todo.title.toLowerCase().contains(_query.toLowerCase()),
+          )
+          .toList();
+    }
+
+    if (_filter == TodoFilter.completed) {
+      filtered = filtered.where((todo) => todo.completed).toList();
+    } else if (_filter == TodoFilter.incompleted) {
+      filtered = filtered.where((todo) => !todo.completed).toList();
+    }
+
+    emit(TodoLoaded(filtered, _query, _filter));
   }
 }

@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:todo_app_web/domain/entities/todo.dart';
 
+import '../enum/todo_filter.dart';
+
 abstract class TodoState extends Equatable {
   const TodoState();
 
@@ -15,11 +17,12 @@ class TodoLoading extends TodoState {}
 class TodoLoaded extends TodoState {
   final List<Todo> todos;
   final String query;
+  final TodoFilter filter;
 
-  const TodoLoaded(this.todos, this.query);
+  const TodoLoaded(this.todos, this.query, this.filter);
 
   @override
-  List<Object?> get props => [todos, query];
+  List<Object?> get props => [todos, query, filter];
 }
 
 class TodoError extends TodoState {
