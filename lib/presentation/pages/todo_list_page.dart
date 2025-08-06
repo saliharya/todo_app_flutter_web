@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app_web/domain/entities/todo.dart';
 import 'package:todo_app_web/presentation/blocs/todo_cubit.dart';
 import 'package:todo_app_web/presentation/blocs/todo_state.dart';
+import 'package:todo_app_web/presentation/widgets/add_todo_modal.dart';
 import 'package:todo_app_web/presentation/widgets/todo_item.dart';
 
 class TodoListPage extends StatelessWidget {
@@ -11,7 +13,11 @@ class TodoListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo List'),
+        title: const Padding(
+          padding: EdgeInsets.only(top: 32.0),
+          child: Text('Todo List'),
+        ),
+        centerTitle: true,
       ),
       body: BlocBuilder<TodoCubit, TodoState>(
         builder: (context, state) {
@@ -48,13 +54,20 @@ class TodoListPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: Open create todo form
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add new todo')),
-          );
+          showAddTodoModal(context, (title, completed) {
+            final todo = Todo(title: title, completed: completed);
+            context.read<TodoCubit>().addTodo(todo);
+          });
         },
         child: const Icon(Icons.add),
       ),
+    );
+  }
+
+  void showAddTodoModal(BuildContext context, void Function(String, bool) onSubmit) {
+    showDialog(
+      context: context,
+      builder: (context) => AddTodoModal(onSubmit: onSubmit),
     );
   }
 }
