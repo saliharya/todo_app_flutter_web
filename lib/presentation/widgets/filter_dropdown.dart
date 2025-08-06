@@ -23,20 +23,20 @@ class FilterDropdownWidget extends StatelessWidget {
       },
       underline: Container(),
       borderRadius: BorderRadius.circular(8),
-      items: [
-        const DropdownMenuItem(
-          value: TodoFilter.all,
-          child: Text('All'),
-        ),
-        DropdownMenuItem(
-          value: TodoFilter.incompleted,
-          child: const Text('Incomplete'),
-        ),
-        DropdownMenuItem(
-          value: TodoFilter.completed,
-          child: const Text('Complete'),
-        ),
-      ],
+      items: TodoFilter.values.map((filter) {
+        final label = switch (filter) {
+          TodoFilter.all => 'All',
+          TodoFilter.incompleted => 'Incomplete',
+          TodoFilter.completed => 'Complete',
+        };
+        return DropdownMenuItem<TodoFilter>(
+          value: filter,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(label),
+          ),
+        );
+      }).toList(),
     );
   }
 }
