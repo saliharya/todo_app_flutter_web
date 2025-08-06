@@ -29,7 +29,7 @@ class TodoApi {
   }
 
   Future<TodoDto> deleteTodo(String id) async {
-    final response = await _dio.delete(ApiConstants.todosEndpoint);
+    final response = await _dio.delete("${ApiConstants.todosEndpoint}/$id");
     return TodoDto.fromJson(response.data);
   }
 }
